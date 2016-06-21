@@ -211,7 +211,6 @@ class dibs_pw_api extends dibs_pw_helpers {
             }
             
             $i = 1;
-            $calculatedAmount = 0;
             foreach($oOrder->items as $oItem) {
                 $iTmpPrice = self::api_dibs_round($oItem->price);
                 if(!empty($iTmpPrice)) {
@@ -226,14 +225,9 @@ class dibs_pw_api extends dibs_pw_helpers {
                         self::api_dibs_utf8Fix(str_replace(';','\;',$oItem->id)) . 
                         (isset($oItem->tax) ? ';' . self::api_dibs_round($oItem->tax) : '');
                 }
-                $calculatedAmount += $iTmpPrice * $oItem->qty;
                 unset($iTmpPrice);
             }
 	}
-        if($calculatedAmount != $aData['amount']) {
-             $amount = $aData['amount'] - $calculatedAmount;
-             $aData['oiRow' . $i++] = "1;pcs;Rounding;{$amount};rnd_1;0";
-        }
         if(!empty($aData['orderid'])) $aData['yourRef'] = $aData['orderid'];
         if((string)$this->helper_dibs_tools_conf('capturenow') == 'yes') $aData['capturenow'] = 1;
         $sDistribType = $this->helper_dibs_tools_conf('distr');
